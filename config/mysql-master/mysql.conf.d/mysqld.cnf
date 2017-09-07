@@ -24,7 +24,16 @@ pid-file	= /var/run/mysqld/mysqld.pid
 socket		= /var/run/mysqld/mysqld.sock
 datadir		= /var/lib/mysql
 log-error	= /var/log/mysql/error.log
+
+character-set-client-handshake=FALSE
+character-set-server=utf8mb4
+collation-server=utf8mb4_unicode_ci
+init-connect='SET NAMES utf8mb4'
+
 # By default we only accept connections from localhost
+
+max_connections = 1000
+
 #bind-address	= 127.0.0.1
 # Disabling symbolic-links is recommended to prevent assorted security risks
 symbolic-links=0

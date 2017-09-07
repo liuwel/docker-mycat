@@ -10,6 +10,7 @@
 <!DOCTYPE mycat:server SYSTEM "server.dtd">
 <mycat:server xmlns:mycat="http://io.mycat/">
 	<system>
+	<property name="charset">utf8mb4</property>
 	<property name="useSqlStat">0</property>  <!-- 1为开启实时统计、0为关闭 -->
 	<property name="useGlobleTableCheck">0</property>  <!-- 1为开启全加班一致性检测、0为关闭 -->
 
@@ -77,8 +78,8 @@
 	</firewall>-->
 
 	<user name="root">
-		<property name="password">jiabin</property>
-		<property name="schemas">mall</property>
+		<property name="password">_mypassword</property>
+		<property name="schemas">masterdb</property>
 
 		<!-- 表级 DML 权限设置 -->
 		<!--
