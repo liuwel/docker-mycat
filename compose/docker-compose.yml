@@ -1,0 +1,94 @@
+version: '2'
+services:
+  m1:
+    build: ./master
+    container_name: m1
+    volumes:
+      - /home/liuwel/config/mysql-master/:/etc/mysql/:ro
+      - /etc/localtime:/etc/localtime:ro
+      - /home/liuwel/config/hosts:/etc/hosts:ro
+    ports:
+      - "3309:3306"
+    networks:
+      mysql:
+        ipv4_address: 172.18.0.2
+    ulimits:
+      nproc: 65535
+    hostname: m1
+    mem_limit: 512m
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: m1test
+  s1:
+      build: ./s1
+      container_name: s1
+      volumes:
+        - /home/liuwel/config/mysql-s1/:/etc/mysql/:ro
+        - /etc/localtime:/etc/localtime:ro
+        - /home/liuwel/config/hosts:/etc/hosts:ro
+      ports:
+        - "3307:3306"
+      networks:
+        mysql:
+          ipv4_address: 172.18.0.3
+      links:
+        - m1
+      ulimits:
+        nproc: 65535
+      hostname: s1
+      mem_limit: 512m
+      restart: always
+      environment:
+        MYSQL_ROOT_PASSWORD: s1test
+  s2:
+    build: ./s2
+    container_name: s2
+    volumes:
+      - /home/liuwel/config/mysql-s2/:/etc/mysql/:ro
+      - /etc/localtime:/etc/localtime:ro
+      - /home/liuwel/config/hosts:/etc/hosts:ro
+    ports:
+      - "3308:3306"
+    links:
+      - m1
+    networks:
+      mysql:
+        ipv4_address: 172.18.0.4
+    ulimits:
+      nproc: 65535
+    hostname: s2
+    mem_limit: 512m
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: s2test
+  mycat:
+    build: ./mycat
+    container_name: mycat
+    volumes:
+      - /home/liuwel/config/mycat/:/mycat/conf/:ro
+      - /home/liuwel/config/mycat-logs/:/mycat/logs/:rw
+      - /etc/localtime:/etc/localtime:ro
+      - /home/liuwel/config/hosts:/etc/hosts:ro
+    ports:
+      - "8066:8066"
+      - "9066:9066"
+    links:
+      - m1
+      - s1
+      - s2
+    networks:
+      mysql:
+        ipv4_address: 172.18.0.5
+    ulimits:
+      nproc: 65535
+    hostname: mycat
+    mem_limit: 512m
+    restart: always
+networks:
+  mysql:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+      - subnet: 172.18.0.0/24
+        gateway: 172.18.0.1

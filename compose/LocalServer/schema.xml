@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE mycat:schema SYSTEM "schema.dtd">
+<mycat:schema xmlns:mycat="http://io.mycat/">
+
+	<schema name="mall" checkSQLschema="false" sqlMaxLimit="100" dataNode="mallDN">
+
+	</schema>
+
+	<dataNode name="mallDN" dataHost="mallDH" database="mall">
+
+	</dataNode>
+
+	<dataHost name="mallDH" maxCon="1000" minCon="10" balance="1"
+			  writeType="0" dbType="mysql" dbDriver="native" switchType="-1" slaveThreshold="100">
+		<heartbeat>select user()</heartbeat>
+		<writeHost host="m1" url="127.0.0.1:3309" user="root" password="m1test">
+			<readHost host="s1" url="127.0.0.1:3307" user="root" password="s1test" />
+			<readHost host="s2" url="127.0.0.1:3308" user="root" password="s2test" />
+		</writeHost>
+
+	</dataHost>
+
+</mycat:schema>
