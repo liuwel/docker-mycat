@@ -2,6 +2,7 @@
 
 ### 拉取 [github项目](https://github.com/liuwel/docker-mycat "github") 
 配置文件已经全部写好 基本找下面流程走一遍就能直接用
+
 注意：mycat 和 mysql使用的字符集编码全部是 <code>utf8mb4</code>
 
 ```shell
@@ -300,7 +301,8 @@ owners.
 Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
 mysql>
 ```
-已经进入m1主服务器mysql 命令行
+已经进入m1主服务器mysql 命令行 
+
 创建用于主从复制的用户repl
 ```shell
 mysql> create user repl;
@@ -381,7 +383,9 @@ MySQL [(none)]> show databases;
 5 rows in set (0.00 sec)
 ```
 可以看到从库也已经创建成功了 到这里msyql的主从已经配置完成了
+
 接下来是mycat的配置其实在 ~/config/mycat 里面已经配置好了直接就可以用了
+
 看下schama.xml配置文件  
 ```shell 
 % cat ~/config/mycat/schema.xml
