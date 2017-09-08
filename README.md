@@ -1,4 +1,4 @@
-# 使用docker创建mycat mysql主从
+# 使用docker创建mycat mysql主从服务器
 
 ### 拉取 [github项目](https://github.com/liuwel/docker-mycat "github") 
 配置文件已经全部写好 基本找下面流程走一遍就能直接用
