@@ -100,9 +100,13 @@
 ### 复制配置文件到用户目录下
 #### mysql 主从服务器的配置已经写在config对应的目录中 
 mysql-m1 : 主服务器 IP:172.18.0.2 
+
 mysql-s1 : 从服务器slave1 IP:172.18.0.3
+
 mysql-s2 : 从服务器slave2 IP:172.18.0.4
+
 mycat    : Mycat服务器 IP:172.18.0.5  
+
 将配置文件copy到用户目录下 后面配置的docker-compose.yml中会加载此配置目录
 ```shell
 % cp -r docker-mycat/config ~/
@@ -496,16 +500,18 @@ server.xml 配置文件
 ### 整体测试
 ```shell
 % mysql -uroot -p -P8066 -hlocal
-MySQL [(none)]> show databases;
+```
+MySQL \[(none)\]> show databases;
 +----------+
 | DATABASE |
 +----------+
 | masterdb |
 +----------+
 1 row in set (0.00 sec)
-```
+
+
 测试数据
-```sql
+```shell
 MySQL [(none)]> use masterdb                                                         
 Database changed                                                                     
 MySQL [masterdb]> CREATE TABLE `test_table` (                                        
@@ -543,7 +549,7 @@ INSQuery OK, 1 row affected (0.01 sec)
 MySQL [masterdb]> INSERT INTO `test_table` VALUES ('6', '测试标题6', '测试内容6');           
 Query OK, 1 row affected (0.01 sec)                                                  
 ```
-```sql
+```shell
 MySQL [masterdb]> select * from test_table;                                          
 +----+---------------+---------------+                                               
 | id | title         | content       |                                               
