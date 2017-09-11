@@ -98,7 +98,6 @@
 └ README.md
 19 directories, 69 files
 ```
-### 复制配置文件到用户目录下
 #### mysql 主从服务器的配置已经写在config对应的目录中 
 mysql-m1 : 主服务器 IP:172.18.0.2 
 
@@ -107,11 +106,6 @@ mysql-s1 : 从服务器slave1 IP:172.18.0.3
 mysql-s2 : 从服务器slave2 IP:172.18.0.4
 
 mycat    : Mycat服务器 IP:172.18.0.5  
-
-将配置文件copy到用户目录下 后面配置的docker-compose.yml中会加载此配置目录
-```shell
-% cp -r docker-mycat/config ~/
-```
 
 ### 修改hosts文件 添加解析
 ```shell
