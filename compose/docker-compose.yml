@@ -4,9 +4,11 @@ services:
     build: ./mysql_m1
     container_name: m1
     volumes:
-      - ../config/mysql-master/:/etc/mysql/:ro
+      - ../config/mysql-m1/:/etc/mysql/:ro
       - /etc/localtime:/etc/localtime:ro
       - ../config/hosts:/etc/hosts:ro
+      # - ../data/m1:/var/lib/mysql
+      # - ../log/m1:/var/log/mysql
     ports:
       - "3309:3306"
     networks:
@@ -26,6 +28,8 @@ services:
         - ../config/mysql-s1/:/etc/mysql/:ro
         - /etc/localtime:/etc/localtime:ro
         - ../config/hosts:/etc/hosts:ro
+        # - ../data/s1:/var/lib/mysql
+        # - ../log/s1:/var/log/mysql
       ports:
         - "3307:3306"
       networks:
@@ -47,6 +51,8 @@ services:
       - ../config/mysql-s2/:/etc/mysql/:ro
       - /etc/localtime:/etc/localtime:ro
       - ../config/hosts:/etc/hosts:ro
+      # - ../data/s2:/var/lib/mysql
+      # - ../log/s2:/var/log/mysql
     ports:
       - "3308:3306"
     links:
@@ -66,7 +72,7 @@ services:
     container_name: mycat
     volumes:
       - ../config/mycat/:/mycat/conf/:ro
-      - ../config/mycat-logs/:/mycat/logs/:rw
+      - ../log/mycat-logs/:/mycat/logs/:rw
       - /etc/localtime:/etc/localtime:ro
       - ../config/hosts:/etc/hosts:ro
     ports:
