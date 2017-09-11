@@ -128,12 +128,12 @@ mycat    : Mycat服务器 IP:172.18.0.5
 version: '2'
 services:
   m1:
-    build: ./master
+    build: ./mysql_m1
     container_name: m1
     volumes:
-      - /home/liuwel/config/mysql-master/:/etc/mysql/:ro
+      - ../config/mysql-master/:/etc/mysql/:ro
       - /etc/localtime:/etc/localtime:ro
-      - /home/liuwel/config/hosts:/etc/hosts:ro
+      - ../config/hosts:/etc/hosts:ro
     ports:
       - "3309:3306"
     networks:
@@ -147,12 +147,12 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: m1test
   s1:
-      build: ./s1
+      build: ./mysql_s1
       container_name: s1
       volumes:
-        - /home/liuwel/config/mysql-s1/:/etc/mysql/:ro
+        - ../config/mysql-s1/:/etc/mysql/:ro
         - /etc/localtime:/etc/localtime:ro
-        - /home/liuwel/config/hosts:/etc/hosts:ro
+        - ../config/hosts:/etc/hosts:ro
       ports:
         - "3307:3306"
       networks:
@@ -168,12 +168,12 @@ services:
       environment:
         MYSQL_ROOT_PASSWORD: s1test
   s2:
-    build: ./s2
+    build: ./mysql_s2
     container_name: s2
     volumes:
-      - /home/liuwel/config/mysql-s2/:/etc/mysql/:ro
+      - ../config/mysql-s2/:/etc/mysql/:ro
       - /etc/localtime:/etc/localtime:ro
-      - /home/liuwel/config/hosts:/etc/hosts:ro
+      - ../config/hosts:/etc/hosts:ro
     ports:
       - "3308:3306"
     links:
@@ -192,10 +192,10 @@ services:
     build: ./mycat
     container_name: mycat
     volumes:
-      - /home/liuwel/config/mycat/:/mycat/conf/:ro
-      - /home/liuwel/config/mycat-logs/:/mycat/logs/:rw
+      - ../config/mycat/:/mycat/conf/:ro
+      - ../config/mycat-logs/:/mycat/logs/:rw
       - /etc/localtime:/etc/localtime:ro
-      - /home/liuwel/config/hosts:/etc/hosts:ro
+      - ../config/hosts:/etc/hosts:ro
     ports:
       - "8066:8066"
       - "9066:9066"
