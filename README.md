@@ -226,46 +226,7 @@ networks:
 Building m1
 Step 1/4 : FROM mysql:5.7.17
  ---> 9546ca122d3a
-Step 2/4 : MAINTAINER <liuwel liuwel@live.com>
- ---> Running in c1139b420f19
- ---> dc2f97c1805b
-Removing intermediate container c1139b420f19
-Step 3/4 : EXPOSE 3306
- ---> Running in 3fee8dbf7192
- ---> fc261de23562
-Removing intermediate container 3fee8dbf7192
-Step 4/4 : CMD mysqld
- ---> Running in 3a5b7a19f320
- ---> cffffead5570
-Removing intermediate container 3a5b7a19f320
-Successfully built cffffead5570
-Successfully tagged compose_m1:latest
-Building s1
-Step 1/4 : FROM mysql:5.7.17
- ---> 9546ca122d3a
-Step 2/4 : MAINTAINER <liuwel liuwel@live.com>
- ---> Using cache
- ---> dc2f97c1805b
-Step 3/4 : EXPOSE 3306
- ---> Using cache
- ---> fc261de23562
-Step 4/4 : CMD mysqld
- ---> Using cache
- ---> cffffead5570
-Successfully built cffffead5570
-Successfully tagged compose_s1:latest
-Building s2
-Step 1/4 : FROM mysql:5.7.17
- ---> 9546ca122d3a
-Step 2/4 : MAINTAINER <liuwel liuwel@live.com>
- ---> Using cache
- ---> dc2f97c1805b
-Step 3/4 : EXPOSE 3306
- ---> Using cache
- ---> fc261de23562
-Step 4/4 : CMD mysqld
- ---> Using cache
- ---> cffffead5570
+ ...
 Successfully built cffffead5570
 Successfully tagged compose_s2:latest
 ```
@@ -300,7 +261,6 @@ mysql>
 创建用于主从复制的用户repl
 ```shell
 mysql> create user repl;
-Query OK, 0 rows affected (0.01 sec)
 ```
 给repl用户授予slave的权限
 ```shell
@@ -334,20 +294,8 @@ Query OK, 0 rows affected (0.00 sec)
 ```
 进入s2 shell
 ```shell
-sudo docker exec -it s2 /bin/bash                                                            root@s2:/# mysql -uroot -p
-Enter password:
-Welcome to the MySQL monitor.  Commands end with ; or \g.
-Your MySQL connection id is 3
-Server version: 5.7.17-log MySQL Community Server (GPL)
-
-Copyright (c) 2000, 2016, Oracle and/or its affiliates. All rights reserved.
-
-Oracle is a registered trademark of Oracle Corporation and/or its
-affiliates. Other names may be trademarks of their respective
-owners.
-
-Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
-
+sudo docker exec -it s2 /bin/bash                                                            
+root@s2:/# mysql -uroot -p
 mysql> change master to master_host='m1',master_port=3306,master_user='repl',master_password='repl',master_log_file='master-bin.000003',master_log_pos=644;
 Query OK, 0 rows affected, 2 warnings (0.03 sec)
 
