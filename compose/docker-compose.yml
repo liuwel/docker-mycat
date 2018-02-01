@@ -5,7 +5,7 @@ services:
     container_name: m1
     volumes:
       - ../config/mysql-m1/:/etc/mysql/:ro
-      - /etc/localtime:/etc/localtime:ro
+      #- /etc/localtime:/etc/localtime:ro
       - ../config/hosts:/etc/hosts:ro
     ports:
       - "3309:3306"
@@ -24,7 +24,7 @@ services:
       container_name: s1
       volumes:
         - ../config/mysql-s1/:/etc/mysql/:ro
-        - /etc/localtime:/etc/localtime:ro
+       # - /etc/localtime:/etc/localtime:ro
         - ../config/hosts:/etc/hosts:ro
       ports:
         - "3307:3306"
@@ -45,7 +45,7 @@ services:
     container_name: s2
     volumes:
       - ../config/mysql-s2/:/etc/mysql/:ro
-      - /etc/localtime:/etc/localtime:ro
+      #- /etc/localtime:/etc/localtime:ro
       - ../config/hosts:/etc/hosts:ro
     ports:
       - "3308:3306"
@@ -67,7 +67,7 @@ services:
     volumes:
       - ../config/mycat/:/mycat/conf/:ro
       - ../log/mycat-logs/:/mycat/logs/:rw
-      - /etc/localtime:/etc/localtime:ro
+      #- /etc/localtime:/etc/localtime:ro
       - ../config/hosts:/etc/hosts:ro
     ports:
       - "8066:8066"
