@@ -6,6 +6,7 @@
 注意：mycat 和 mysql使用的字符集编码全部是 <code>utf8mb4</code>
 
 ```shell
+% cd ~ #切换到主目录
 % git clone https://github.com/liuwel/docker-mycat.git
 % tree docker-mycat
 ├ compose
