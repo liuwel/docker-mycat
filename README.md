@@ -242,7 +242,7 @@ Creating s1
 #### 配置m1主服务器
 ```shell
 sudo docker exec -it m1 /bin/bash
-root@m1:/# mysql -uroot -p
+root@m1:/# mysql -uroot -pm1test
 mysql: [Warning] Using a password on the command line interface can be insecure.
 Welcome to the MySQL monitor.  Commands end with ; or \g.
 Your MySQL connection id is 3
@@ -287,7 +287,7 @@ mysql>  show master status;
 进入s1 shell
 ```shell
 % sudo docker exec -it s1 /bin/bash
-root@s1:/# mysql -uroot -p
+root@s1:/# mysql -uroot -ps1test
 mysql> change master to master_host='m1',master_port=3306,master_user='repl',master_password='repl',master_log_file='master-bin.000003',master_log_pos=644;
 Query OK, 0 rows affected, 2 warnings (0.05 sec)
 mysql> start slave;
@@ -296,7 +296,7 @@ Query OK, 0 rows affected (0.00 sec)
 进入s2 shell
 ```shell
 sudo docker exec -it s2 /bin/bash                                                            
-root@s2:/# mysql -uroot -p
+root@s2:/# mysql -uroot -ps2test
 mysql> change master to master_host='m1',master_port=3306,master_user='repl',master_password='repl',master_log_file='master-bin.000003',master_log_pos=644;
 Query OK, 0 rows affected, 2 warnings (0.03 sec)
 
