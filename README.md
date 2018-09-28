@@ -15,7 +15,7 @@
 │   │   └ Dockerfile
 │   ├ mycat
 │   │   ├ Dockerfile
-│   │   └ Mycat-server-1.6-RELEASE-20161028204710-linux.tar.gz
+│   │   └ Mycat-server-1.6.5-release-20180122220033-linux.tar.gz
 │   ├ s1
 │   │   └ Dockerfile
 │   └ s2
@@ -448,6 +448,7 @@ server.xml 配置文件
 ```shell
 % mysql -uroot -p -P8066 -hlocal
 ```
+```shell
 MySQL \[(none)\]> show databases;
 +----------+
 | DATABASE |
@@ -455,9 +456,9 @@ MySQL \[(none)\]> show databases;
 | masterdb |
 +----------+
 1 row in set (0.00 sec)
+```
 
-
-测试数据
+### 测试数据
 ```shell
 MySQL [(none)]> use masterdb                                                         
 Database changed                                                                     
@@ -469,7 +470,8 @@ MySQL [masterdb]> CREATE TABLE `test_table` (
     -> ) ENGINE=InnoDB COMMENT='测试表'                                                 
     -> ;                                                                             
 Query OK, 0 rows affected (0.03 sec)                                                 
-                                                                                     
+```
+```shell                                                                                   
 MySQL [masterdb]> show tables;                                                       
 +--------------------+                                                               
 | Tables_in_masterdb |                                                               
@@ -477,21 +479,22 @@ MySQL [masterdb]> show tables;
 | test_table         |                                                               
 +--------------------+                                                               
 1 row in set (0.00 sec)                                                              
-                                                                                     
+```
+```shell                                                                              
 MySQL [masterdb]> INSERT INTO `test_table` VALUES ('1', '测试标题1', '测试内容1');           
-INSERT Query OK, 1 row affected (0.01 sec)                                           
+Query OK, 1 row affected (0.01 sec)                                           
                                                                                      
 MySQL [masterdb]> INSERT INTO `test_table` VALUES ('2', '测试标题2', '测试内容2');           
-INSERT INTO `tQuery OK, 1 row affected (0.01 sec)                                    
+Query OK, 1 row affected (0.01 sec)                                    
                                                                                      
 MySQL [masterdb]> INSERT INTO `test_table` VALUES ('3', '测试标题3', '测试内容3');           
-NSERQuery OK, 1 row affected (0.01 sec)                                              
+Query OK, 1 row affected (0.01 sec)                                              
                                                                                      
 MySQL [masterdb]> INSERT INTO `test_table` VALUES ('4', '测试标题4', '测试内容4');           
-INSERT INQuery OK, 1 row affected (0.01 sec)                                         
+Query OK, 1 row affected (0.01 sec)                                         
                                                                                      
 MySQL [masterdb]> INSERT INTO `test_table` VALUES ('5', '测试标题5', '测试内容5');           
-INSQuery OK, 1 row affected (0.01 sec)                                               
+Query OK, 1 row affected (0.01 sec)                                               
                                                                                      
 MySQL [masterdb]> INSERT INTO `test_table` VALUES ('6', '测试标题6', '测试内容6');           
 Query OK, 1 row affected (0.01 sec)                                                  
