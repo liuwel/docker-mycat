@@ -1,3 +1,21 @@
 [mysqld]
 skip-host-cache
 skip-name-resolve
+
+
+character-set-client-handshake=FALSE
+character-set-server=utf8mb4
+collation-server=utf8mb4_unicode_ci
+init-connect='SET NAMES utf8mb4'
+
+# By default we only accept connections from localhost
+
+max_connections = 1000
+
+#bind-address   = 127.0.0.1
+# Disabling symbolic-links is recommended to prevent assorted security risks
+
+#给数据库服务的唯一标识，一般为大家设置服务器Ip的末尾号
+server-id=2
+log-bin=master-bin
+log-bin-index=master-bin.index

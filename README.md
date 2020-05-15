@@ -3,101 +3,33 @@
 ### 拉取 [github项目](https://github.com/liuwel/docker-mycat "github") 
 配置文件已经全部写好 基本找下面流程走一遍就能直接用
 
-注意：mycat 和 mysql使用的字符集编码全部是 <code>utf8mb4</code>
+注意：mycat 和 mysql使用的字符集编码全部是 <code>utf8mb4</code> mysql docker版本 8.0.20
 
 ```shell
-% cd ~ #切换到主目录
 % git clone https://github.com/liuwel/docker-mycat.git
 % tree docker-mycat
-├ compose
-│   ├ docker-compose.yml
-│   ├ master
-│   │   └ Dockerfile
-│   ├ mycat
-│   │   ├ Dockerfile
-│   │   └ Mycat-server-1.6.5-release-20180122220033-linux.tar.gz
-│   ├ s1
-│   │   └ Dockerfile
-│   └ s2
-│       └ Dockerfile
-├ config
-│   ├ hosts
-│   ├ mycat
-│   │   ├ autopartition-long.txt
-│   │   ├ auto-sharding-long.txt
-│   │   ├ auto-sharding-rang-mod.txt
-│   │   ├ cacheservice.properties
-│   │   ├ ehcache.xml
-│   │   ├ index_to_charset.properties
-│   │   ├ log4j2.xml
-│   │   ├ migrateTables.properties
-│   │   ├ myid.properties
-│   │   ├ partition-hash-int.txt
-│   │   ├ partition-range-mod.txt
-│   │   ├ rule.xml
-│   │   ├ schema.xml
-│   │   ├ sequence_conf.properties
-│   │   ├ sequence_db_conf.properties
-│   │   ├ sequence_distributed_conf.properties
-│   │   ├ sequence_time_conf.properties
-│   │   ├ server.xml
-│   │   ├ sharding-by-enum.txt
-│   │   ├ wrapper.conf
-│   │   ├ zkconf
-│   │   │   ├ autopartition-long.txt
-│   │   │   ├ auto-sharding-long.txt
-│   │   │   ├ auto-sharding-rang-mod.txt
-│   │   │   ├ cacheservice.properties
-│   │   │   ├ ehcache.xml
-│   │   │   ├ index_to_charset.properties
-│   │   │   ├ partition-hash-int.txt
-│   │   │   ├ partition-range-mod.txt
-│   │   │   ├ rule.xml
-│   │   │   ├ schema.xml
-│   │   │   ├ sequence_conf.properties
-│   │   │   ├ sequence_db_conf.properties
-│   │   │   ├ sequence_distributed_conf-mycat_fz_01.properties
-│   │   │   ├ sequence_distributed_conf.properties
-│   │   │   ├ sequence_time_conf-mycat_fz_01.properties
-│   │   │   ├ sequence_time_conf.properties
-│   │   │   ├ server-mycat_fz_01.xml
-│   │   │   ├ server.xml
-│   │   │   └ sharding-by-enum.txt
-│   │   └ zkdownload
-│   │       └ auto-sharding-long.txt
-│   ├ mycat-logs
-│   │   ├ mycat.log
-│   │   ├ mycat.pid
-│   │   └ wrapper.log
-│   ├ mysql-master
-│   │   ├ conf.d
-│   │   │   ├ client.cnf
-│   │   │   ├ docker.cnf
-│   │   │   └ mysql.cnf
-│   │   ├ my.cnf
-│   │   ├ mysql.cnf
-│   │   └ mysql.conf.d
-│   │       └ mysqld.cnf
-│   ├ mysql-s1
-│   │   ├ conf.d
-│   │   │   ├ client.cnf
-│   │   │   ├ docker.cnf
-│   │   │   └ mysql.cnf
-│   │   ├ my.cnf
-│   │   ├ mysql.cnf
-│   │   └ mysql.conf.d
-│   │       └ mysqld.cnf
-│   └ mysql-s2
-│       ├ conf.d
-│       │   ├ client.cnf
-│       │   ├ docker.cnf
-│       │   └ mysql.cnf
-│       ├ my.cnf
-│       ├ mysql.cnf
-│       └ mysql.conf.d
-│           └ mysqld.cnf
-└ README.md
-19 directories, 69 files
+docker-mycat
+├── README.md
+├── compose
+│   ├── docker-compose.yml
+│   └── mycat
+│       ├── Dockerfile
+│       └── Mycat-server-1.6-RELEASE-20161028204710-linux.tar.gz
+└── config
+    ├── hosts
+    ├── mycat
+    │   ├── ...
+    ├── mysql-m1
+    │   └── conf.d
+    │       └── docker.cnf
+    ├── mysql-s1
+    │   └── conf.d
+    │       └── docker.cnf
+    └── mysql-s2
+        └── conf.d
+            └── docker.cnf
+
+12 directories, 48 files
 ```
 #### mysql 主从服务器的配置已经写在config对应的目录中 
 mysql-m1 : 主服务器 IP:172.18.0.2 
@@ -129,11 +61,11 @@ mycat    : Mycat服务器 IP:172.18.0.5
 version: '2'
 services:
   m1:
-    build: ./mysql_m1
+    image: mysql:8.0.20
     container_name: m1
     volumes:
-      - ../config/mysql-master/:/etc/mysql/:ro
-      - /etc/localtime:/etc/localtime:ro
+      - ../config/mysql-m1/conf.d/docker.cnf:/etc/mysql/conf.d/docker.cnf:ro
+      #- /etc/localtime:/etc/localtime:ro
       - ../config/hosts:/etc/hosts:ro
     ports:
       - "3309:3306"
@@ -145,35 +77,41 @@ services:
     hostname: m1
     mem_limit: 512m
     restart: always
+    command: 
+      - '--default-authentication-plugin=mysql_native_password'
+      - '--character-set-server=utf8mb4'
     environment:
       MYSQL_ROOT_PASSWORD: m1test
   s1:
-      build: ./mysql_s1
-      container_name: s1
-      volumes:
-        - ../config/mysql-s1/:/etc/mysql/:ro
-        - /etc/localtime:/etc/localtime:ro
-        - ../config/hosts:/etc/hosts:ro
-      ports:
-        - "3307:3306"
-      networks:
-        mysql:
-          ipv4_address: 172.18.0.3
-      links:
-        - m1
-      ulimits:
-        nproc: 65535
-      hostname: s1
-      mem_limit: 512m
-      restart: always
-      environment:
-        MYSQL_ROOT_PASSWORD: s1test
+    image: mysql:8.0.20
+    container_name: s1
+    volumes:
+      - ../config/mysql-s1/conf.d/docker.cnf:/etc/mysql/conf.d/docker.cnf:ro
+      # - /etc/localtime:/etc/localtime:ro
+      - ../config/hosts:/etc/hosts:ro
+    ports:
+      - "3307:3306"
+    networks:
+      mysql:
+        ipv4_address: 172.18.0.3
+    links:
+      - m1
+    ulimits:
+      nproc: 65535
+    hostname: s1
+    mem_limit: 512m
+    restart: always
+    command:
+      - '--default-authentication-plugin=mysql_native_password'
+      - '--character-set-server=utf8mb4'
+    environment:
+      MYSQL_ROOT_PASSWORD: s1test
   s2:
-    build: ./mysql_s2
+    image: mysql:8.0.20
     container_name: s2
     volumes:
-      - ../config/mysql-s2/:/etc/mysql/:ro
-      - /etc/localtime:/etc/localtime:ro
+      - ../config/mysql-s2/conf.d/docker.cnf:/etc/mysql/conf.d/docker.cnf:ro
+      #- /etc/localtime:/etc/localtime:ro
       - ../config/hosts:/etc/hosts:ro
     ports:
       - "3308:3306"
@@ -187,6 +125,9 @@ services:
     hostname: s2
     mem_limit: 512m
     restart: always
+    command: 
+      - '--default-authentication-plugin=mysql_native_password'
+      - '--character-set-server=utf8mb4'
     environment:
       MYSQL_ROOT_PASSWORD: s2test
   mycat:
@@ -194,8 +135,8 @@ services:
     container_name: mycat
     volumes:
       - ../config/mycat/:/mycat/conf/:ro
-      - ../config/mycat-logs/:/mycat/logs/:rw
-      - /etc/localtime:/etc/localtime:ro
+      - ../log/mycat-logs/:/mycat/logs/:rw
+      #- /etc/localtime:/etc/localtime:ro
       - ../config/hosts:/etc/hosts:ro
     ports:
       - "8066:8066"
@@ -224,12 +165,6 @@ networks:
 ### Build 镜像
 ```shell
 % sudo docker-compose build m1 s1 s2
-Building m1
-Step 1/4 : FROM mysql:5.7.17
- ---> 9546ca122d3a
- ...
-Successfully built cffffead5570
-Successfully tagged compose_s2:latest
 ```
 ### 运行 docker mysql主从数据库 (mysql数据库密码在yml文件里面)
 ```shell
@@ -242,13 +177,12 @@ Creating s1
 #### 配置m1主服务器
 ```shell
 sudo docker exec -it m1 /bin/bash
-root@m1:/# mysql -uroot -pm1test
-mysql: [Warning] Using a password on the command line interface can be insecure.
+root@m1:/# mysql -uroot -p
 Welcome to the MySQL monitor.  Commands end with ; or \g.
-Your MySQL connection id is 3
-Server version: 5.7.17-log MySQL Community Server (GPL)
+Your MySQL connection id is 8
+Server version: 8.0.20 MySQL Community Server - GPL
 
-Copyright (c) 2000, 2016, Oracle and/or its affiliates. All rights reserved.
+Copyright (c) 2000, 2020, Oracle and/or its affiliates. All rights reserved.
 
 Oracle is a registered trademark of Oracle Corporation and/or its
 affiliates. Other names may be trademarks of their respective
@@ -257,16 +191,20 @@ owners.
 Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
 mysql>
 ```
-已经进入m1主服务器mysql 命令行 
 
 创建用于主从复制的用户repl
 ```shell
 mysql> create user repl;
 ```
-给repl用户授予slave的权限
+给repl用户授予slave的权限 
+mysql5.7 写法是 GRANT REPLICATION SLAVE ON *.* TO 'repl'@'172.18.0.%' IDENTIFIED BY 'repl';
+mysql8 已经将创建账户和赋予权限的方式分开
 ```shell
-mysql> GRANT REPLICATION SLAVE ON *.* TO 'repl'@'172.18.0.%' IDENTIFIED BY 'repl';
-Query OK, 0 rows affected, 1 warning (0.00 sec)
+mysql> CREATE USER 'repl'@'172.18.0.%' IDENTIFIED BY 'repl';
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> GRANT REPLICATION SLAVE ON *.* TO 'repl'@'172.18.0.%';
+Query OK, 0 rows affected (0.00 sec)
 ```
 锁表
 ```shell
@@ -279,7 +217,7 @@ mysql>  show master status;
 +-------------------+----------+--------------+------------------+-------------------+
 | File              | Position | Binlog_Do_DB | Binlog_Ignore_DB | Executed_Gtid_Set |
 +-------------------+----------+--------------+------------------+-------------------+
-| master-bin.000003 |      644 |              |                  |                   |
+| master-bin.000003 |      677 |              |                  |                   |
 +-------------------+----------+--------------+------------------+-------------------+
 1 row in set (0.00 sec)
 ```
@@ -287,8 +225,8 @@ mysql>  show master status;
 进入s1 shell
 ```shell
 % sudo docker exec -it s1 /bin/bash
-root@s1:/# mysql -uroot -ps1test
-mysql> change master to master_host='m1',master_port=3306,master_user='repl',master_password='repl',master_log_file='master-bin.000003',master_log_pos=644;
+root@s1:/# mysql -uroot -p
+mysql> change master to master_host='m1',master_port=3306,master_user='repl',master_password='repl',master_log_file='master-bin.000003',master_log_pos=677;
 Query OK, 0 rows affected, 2 warnings (0.05 sec)
 mysql> start slave;
 Query OK, 0 rows affected (0.00 sec)
@@ -296,8 +234,8 @@ Query OK, 0 rows affected (0.00 sec)
 进入s2 shell
 ```shell
 sudo docker exec -it s2 /bin/bash                                                            
-root@s2:/# mysql -uroot -ps2test
-mysql> change master to master_host='m1',master_port=3306,master_user='repl',master_password='repl',master_log_file='master-bin.000003',master_log_pos=644;
+root@s2:/# mysql -uroot -p
+mysql> change master to master_host='m1',master_port=3306,master_user='repl',master_password='repl',master_log_file='master-bin.000003',master_log_pos=677;
 Query OK, 0 rows affected, 2 warnings (0.03 sec)
 
 mysql> start slave;
@@ -328,12 +266,10 @@ MySQL [(none)]> show databases;
 可以看到从库也已经创建成功了 到这里msyql的主从已经配置完成了
 
 接下来是mycat的配置其实在 ~/config/mycat 里面已经配置好了直接就可以用了
-
 看下schama.xml配置文件  
 ```shell 
 % cat ~/config/mycat/schema.xml
 ```
-
 ```xml
 <?xml version="1.0"?>                                                                                          
 <!DOCTYPE mycat:schema SYSTEM "schema.dtd">
@@ -423,7 +359,7 @@ server.xml 配置文件
        </blacklist>
         </firewall>-->
         <user name="root">
-                <property name="password">youpassword</property>
+                <property name="password">yourpassword</property>
                 <property name="schemas">masterdb</property>
 
                 <!-- 表级 DML 权限设置 -->
@@ -443,12 +379,10 @@ server.xml 配置文件
 % cd ~/docker-mycat/compose
 % sudo docker-compose up -d mycat
 ```
-
 ### 整体测试
 ```shell
-% mysql -uroot -p -P8066 -hlocal
+% mysql -uroot -p -P8066 -hmycat
 ```
-```shell
 MySQL \[(none)\]> show databases;
 +----------+
 | DATABASE |
@@ -456,9 +390,7 @@ MySQL \[(none)\]> show databases;
 | masterdb |
 +----------+
 1 row in set (0.00 sec)
-```
-
-### 测试数据
+测试数据
 ```shell
 MySQL [(none)]> use masterdb                                                         
 Database changed                                                                     
@@ -470,8 +402,7 @@ MySQL [masterdb]> CREATE TABLE `test_table` (
     -> ) ENGINE=InnoDB COMMENT='测试表'                                                 
     -> ;                                                                             
 Query OK, 0 rows affected (0.03 sec)                                                 
-```
-```shell                                                                                   
+                                                                                     
 MySQL [masterdb]> show tables;                                                       
 +--------------------+                                                               
 | Tables_in_masterdb |                                                               
@@ -479,22 +410,21 @@ MySQL [masterdb]> show tables;
 | test_table         |                                                               
 +--------------------+                                                               
 1 row in set (0.00 sec)                                                              
-```
-```shell                                                                              
+                                                                                     
 MySQL [masterdb]> INSERT INTO `test_table` VALUES ('1', '测试标题1', '测试内容1');           
-Query OK, 1 row affected (0.01 sec)                                           
+INSERT Query OK, 1 row affected (0.01 sec)                                           
                                                                                      
 MySQL [masterdb]> INSERT INTO `test_table` VALUES ('2', '测试标题2', '测试内容2');           
-Query OK, 1 row affected (0.01 sec)                                    
+INSERT INTO `tQuery OK, 1 row affected (0.01 sec)                                    
                                                                                      
 MySQL [masterdb]> INSERT INTO `test_table` VALUES ('3', '测试标题3', '测试内容3');           
-Query OK, 1 row affected (0.01 sec)                                              
+NSERQuery OK, 1 row affected (0.01 sec)                                              
                                                                                      
 MySQL [masterdb]> INSERT INTO `test_table` VALUES ('4', '测试标题4', '测试内容4');           
-Query OK, 1 row affected (0.01 sec)                                         
+INSERT INQuery OK, 1 row affected (0.01 sec)                                         
                                                                                      
 MySQL [masterdb]> INSERT INTO `test_table` VALUES ('5', '测试标题5', '测试内容5');           
-Query OK, 1 row affected (0.01 sec)                                               
+INSQuery OK, 1 row affected (0.01 sec)                                               
                                                                                      
 MySQL [masterdb]> INSERT INTO `test_table` VALUES ('6', '测试标题6', '测试内容6');           
 Query OK, 1 row affected (0.01 sec)                                                  
@@ -513,14 +443,3 @@ MySQL [masterdb]> select * from test_table;
 +----+---------------+---------------+                                               
 6 rows in set (0.01 sec)
 ```
-
-
-
-
-
-
-
-
-
-
-
